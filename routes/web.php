@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+/* コントローラのクラスを読み込み */
+use App\Http\Controllers\TopicController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,5 +23,8 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+/* Topicsの新規作成と更新以外の処理をルーティング */
+Route::resource('/topics', TopicController::class)->except(['create', 'update'])->middleware(['auth']);
 
 require __DIR__.'/auth.php';
