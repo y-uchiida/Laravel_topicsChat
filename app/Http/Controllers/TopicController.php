@@ -2,24 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-
-/* バリデーションを設定したFormRequestを読み込み */
 use App\Http\Requests\TopicRequest;
 
-use App\Models\Topic;
-use App\Models\Message;
+/* Topic関連のビジネスロジックを記述したサービスクラスを読み込み */
+use App\Services\TopicService;
 
+/* バリデーションを設定したFormRequestを読み込み */
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TopicController extends Controller
 {
+    /**
+     * @var TopicService
+     */
+    protected $topic_service;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @param  TopicService  $topic_service
+     * @return void
+     */
     /* コントローラの初期化処理(コンストラクタ) */
-    public function __construct()
+    public function __construct(TopicService $topic_service)
     {
         /* index 以外のアクションメソッドの利用時に認証を行うように設定 */
         $this->middleware('auth')->except('index');
+
+        /* クラスのプロパティにTopicService を保持し、クラス内のどこからでも利用できるようにする
+         * コンストラクタを利用して依存性注入するので、コンストラクタ・インジェクションという
+         */
+        $this->topic_service = $topic_service;
     }
 
     /**
@@ -51,19 +65,14 @@ class TopicController extends Controller
      */
     public function store(TopicRequest $request)
     {
-        /* Topicの保存 */
-        $new_topic = new Topic();
-        $new_topic->name = $request->name;
-        $new_topic->user_id = Auth::id();
-        $new_topic->latest_comment_time = Carbon::now();
-        $new_topic->save();
-
-        /* 最初のメッセージを登録 */
-        $new_message = new Message();
-        $new_message->body = $request->content;
-        $new_message->user_id = Auth::id();
-        $new_message->topic_id = $new_topic->id;
-        $new_message->save();
+        try {
+            $data = $request->only(['name', 'content']);
+            $this->topic_service->createNewTopic($data, Auth::id());
+            $service = new TopicService();
+            $service->createNewTopic($data, Auth::id());
+        } catch (Exception $e) {
+            return redirect()->route('topics.index')->with('error', 'トピックの作成中にエラーが発生しました。もう一度やり直してください');
+        }
 
         /* 一覧画面にリダイレクト */
         return redirect()->route('topics.index')->with('success', 'スレッドを作成しました');
