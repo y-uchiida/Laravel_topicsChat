@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 /* コントローラのクラスを読み込み */
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TopicController;
+
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,7 @@ use App\Http\Controllers\TopicController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,4 +28,7 @@ Route::get('/dashboard', function () {
 /* Topicsの新規作成と更新以外の処理をルーティング */
 Route::resource('/topics', TopicController::class)->except(['create', 'update'])->middleware(['auth']);
 
-require __DIR__.'/auth.php';
+/* message 関連の処理をルーティング */
+Route::resource('/topics/{topic}/messages', MessageController::class)->except(['create', 'update'])->middleware(['auth']);
+
+require __DIR__ . '/auth.php';

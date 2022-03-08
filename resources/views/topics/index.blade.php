@@ -16,13 +16,14 @@
                     </div>
                     @foreach ($topic->messages as $message)
                         <div class="flex flex-col space-y-4 mb-4">
-                            <h5 class="card-title">{{ $loop->iteration }} 名前：{{ $message->user->name }}：{{ $message->created_at }}</h5>
+                            <h5 class="card-title">{{ $loop->iteration }}
+                                名前：{{ $message->user->name }}：{{ $message->created_at }}</h5>
                             <p class="card-text">{{ $message->body }}</p>
                         </div>
                     @endforeach
                     <hr class="my-2 border-b border-gray-200">
                     <div class="new_message_form">
-                        <form method="POST" action="" class="mb-5">
+                        <form method="POST" action="/topics/{{$topic->id}}/messages" class="mb-5">
                             @csrf
                             <div class="flex flex-col space-y-4 mt-2 mb-4">
                                 <div class="form-group">

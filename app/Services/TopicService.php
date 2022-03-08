@@ -70,6 +70,19 @@ class TopicService
     }
 
     /**
+     * topicに新しいメッセージを追加する
+     *
+     * @param array  $message_data
+     * @param string $user_id
+     * @param string $topic_id
+     *
+     */
+    public function addNewMessage(array $data, string $user_id, )
+    {
+        $message_data = $this->getMessageData($data['content'], $user_id, $data['topic_id']);
+    }
+
+    /**
      * get topic data
      *
      * @param string $topic_name
