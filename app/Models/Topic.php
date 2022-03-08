@@ -9,7 +9,7 @@ class Topic extends Model
 {
     use HasFactory;
 
-    protected $fillabele = [
+    protected $fillable = [
         'name',
         'user_id',
         'is_user_checked',
