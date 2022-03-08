@@ -6,11 +6,15 @@
 
 namespace App\Services;
 
-use App\Models\Topic;
-use App\Models\Message;
-use Exception;
+/* モデルクラスの代わりに、データソースへのアクセスを担うクラスとして用意した
+ * リポジトリクラスを読み込みする
+ */
+use App\Repositories\MessageRepository;
+use App\Repositories\TopicRepository;
+
 
 use Carbon\Carbon;
+use Exception;
 
 /* 手動トランザクションを利用するためDBファサードを読み込み */
 use Illuminate\Support\Facades\DB;
@@ -19,6 +23,21 @@ use Illuminate\Support\Facades\Log;
 
 class TopicService
 {
+    /* リポジトリ層のオブジェクトをプロパティにしておき、依存性注入で受け取れるようにしておく */
+    protected $topic_repository;
+    protected $message_repository;
+
+    /*
+     * リポジトリ層のクラスをコンストラクタインジェクション
+     */
+    public function __construct(
+        TopicRepository $topic_repo,
+        MessageRepository $message_repo
+    ) {
+        $this->topic_repository = $topic_repo;
+        $this->message_repository = $message_repo;
+    }
+
     /**
      * Create new topic and first new message.
      *
@@ -36,10 +55,10 @@ class TopicService
              * マスアサインメント:
              * https://readouble.com/laravel/9.x/ja/eloquent.html#mass-assignment
              */
-            $new_topic = Topic::create($topic_data);
+            $new_topic = $this->topic_repository->create($topic_data);
 
             $message_data = $this->getMessageData($data['content'], $user_id, $new_topic->id);
-            Message::create($message_data);
+            $this->message_repository->create($message_data);
         } catch (Exception $error) {
             /* 例外発生時はDBの変更内容をロールバックし、内容をログに出力 */
             DB::rollBack();

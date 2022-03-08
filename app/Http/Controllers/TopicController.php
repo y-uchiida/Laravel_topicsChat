@@ -68,8 +68,6 @@ class TopicController extends Controller
         try {
             $data = $request->only(['name', 'content']);
             $this->topic_service->createNewTopic($data, Auth::id());
-            $service = new TopicService();
-            $service->createNewTopic($data, Auth::id());
         } catch (Exception $e) {
             return redirect()->route('topics.index')->with('error', 'トピックの作成中にエラーが発生しました。もう一度やり直してください');
         }
