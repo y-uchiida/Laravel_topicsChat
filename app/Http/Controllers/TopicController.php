@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB; /* 手動トランザクションを利用するためDBファサードを読み込み */
+use Illuminate\Support\Facades\Log; /* DB操作時のエラー情報保存のためLogファサードを読み込み */
 
 /* バリデーションを設定したFormRequestを読み込み */
 use App\Http\Requests\TopicRequest;
 
 use App\Models\Topic;
 use App\Models\Message;
-
+use Throwable;
 
 class TopicController extends Controller
 {
@@ -51,19 +53,29 @@ class TopicController extends Controller
      */
     public function store(TopicRequest $request)
     {
-        /* Topicの保存 */
-        $new_topic = new Topic();
-        $new_topic->name = $request->name;
-        $new_topic->user_id = Auth::id();
-        $new_topic->latest_comment_time = Carbon::now();
-        $new_topic->save();
+        DB::beginTransaction(); /* DBファサードから、トランザクションを開始 */
+        try {
+            /* Topicの保存 */
+            $new_topic = new Topic();
+            $new_topic->name = $request->name;
+            $new_topic->user_id = Auth::id();
+            $new_topic->latest_comment_time = Carbon::now();
+            $new_topic->save();
 
-        /* 最初のメッセージを登録 */
-        $new_message = new Message();
-        $new_message->body = $request->content;
-        $new_message->user_id = Auth::id();
-        $new_message->topic_id = $new_topic->id;
-        $new_message->save();
+            /* 最初のメッセージを登録 */
+            $new_message = new Message();
+            $new_message->body = $request->content;
+            $new_message->user_id = Auth::id();
+            $new_message->topic_id = $new_topic->id;
+            $new_message->save();
+
+        } catch (Throwable $e) {
+            /* 例外発生時はDBの変更内容をロールバックし、内容をログに出力 */
+            DB::rollback();
+            Log::error($e->getMessage());
+            return redirect()->route('topics.index')->with('error', 'トピックの作成中にエラーが発生しました。もう一度やり直してください');
+        }
+        DB::commit(); /* トランザクションを正常終了 */
 
         /* 一覧画面にリダイレクト */
         return redirect()->route('topics.index')->with('success', 'スレッドを作成しました');
