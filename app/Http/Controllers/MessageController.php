@@ -7,14 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Requests\MessageRequest;
-use App\Models\Message;
-use App\Models\Topic;
+use App\Services\MessageService;
 
 class MessageController extends Controller
 {
-    public function __construct()
+    private $message_service;
+
+    public function __construct(MessageService $message_service)
     {
         $this->middleware('auth');
+        $this->message_service = $message_service;
     }
 
     /**
@@ -45,16 +47,17 @@ class MessageController extends Controller
      */
     public function store(MessageRequest $request, int $id)
     {
-        /* パスパラメータに含まれるidから、topicを取得 */
-        $topic = Topic::findOrFail($id);
+        try{
+            /* レコード作成に必要なデータ（カラムに入る内容）を配列にまとめる */
+            $message_data = $request->validated();
+            $message_data['user_id'] = Auth::id();
 
-        /* レコード作成に必要なデータ（カラムに入る内容）を配列にまとめる */
-        $message_data = $request->validated();
-        $message_data['user_id'] = Auth::id();
-
-        $topic->messages()->create($message_data);
-
-        return redirect()->route('topics.index');
+            /* Service 経由で、メッセージの保存を実行 */
+            $this->message_service->createNewMessage($message_data, $id);
+        }catch(Exception $e) {
+            return redirect()->route('topics.index')->with('error', 'メッセージの投稿中にエラーが発生しました。');
+        }
+        return redirect()->route('topics.index')->with('success', 'メッセージを投稿しました。');
     }
 
     /**
