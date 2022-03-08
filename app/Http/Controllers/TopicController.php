@@ -43,7 +43,8 @@ class TopicController extends Controller
      */
     public function index()
     {
-        return view('topics.index');
+        $topics = $this->topic_service->getTopics(3);
+        return view('topics.index', compact('topics'));
     }
 
     /**

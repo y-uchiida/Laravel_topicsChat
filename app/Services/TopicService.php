@@ -104,4 +104,15 @@ class TopicService
         ];
     }
 
+    /***
+     * ページングされたtopicを取得する
+     *
+     */
+    public function getTopics(int $per_page)
+    {
+        $topics = $this->topic_repository->getPaginatedTopics($per_page);
+        /* message を利用するので、Eager loadingで予め取得しておく */
+        $topics->load('user', 'messages.user');
+        return $topics;
+    }
 }
