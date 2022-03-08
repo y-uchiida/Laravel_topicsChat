@@ -8,6 +8,7 @@
 namespace App\Repositories;
 
 use App\Models\Topic;
+use Carbon\Carbon;
 
 class TopicRepository
 {
@@ -25,10 +26,25 @@ class TopicRepository
         return $this->topic->create($data);
     }
 
+    /**
+     * 指定のid に一致するTopic を取得する
+     */
+    public function findById(int $id)
+    {
+        return $this->topic->find($id);
+    }
+
+    public function updateTime(int $id)
+    {
+        $topic = $this->findById($id);
+        $topic->latest_comment_time = Carbon::now();
+        return $topic->Save();
+    }
+
     /* ページングされたTopicのデータを取得する
      */
     public function getPaginatedTopics(int $per_page)
     {
-        return $this->topic->paginate($per_page);
+        return $this->topic->orderby('latest_comment_time', 'desc')->paginate($per_page);
     }
 }

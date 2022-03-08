@@ -7,22 +7,35 @@
 
     <x-flash.bar />
 
+
+    <div class="container py-4 sm:px-6 lg:px-8">
+        <div class="">
+            {{ $topics->links() }}
+        </div>
+    </div>
+
     <div class="container">
         @foreach ($topics as $topic)
             <div class="py-12 sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg max-w-7xl sm:px-6 lg:px-8">
                     <div class="py-4 border-b border-gray-200">
-                        <h3 class="m-0">{{ $topic->name }}</h3>
+                        <h3 class="flex items-center space-x-4 m-0 text-base">
+                            <span class="text-xl">
+                                {{ $topic->name }}
+                            </span>
+                            <span class="px-2 bg-indigo-500 rounded-sm text-sm text-white">{{ $topic->messages->count() }}</span>
+                        </h3>
                     </div>
                     @foreach ($topic->messages as $message)
                         <div class="flex flex-col space-y-4 mb-4">
-                            <h5 class="card-title">{{ $loop->iteration }} 名前：{{ $message->user->name }}：{{ $message->created_at }}</h5>
+                            <h5 class="card-title">{{ $loop->iteration }}
+                                名前：{{ $message->user->name }}：{{ $message->created_at }}</h5>
                             <p class="card-text">{{ $message->body }}</p>
                         </div>
                     @endforeach
                     <hr class="my-2 border-b border-gray-200">
                     <div class="new_message_form">
-                        <form method="POST" action="" class="mb-5">
+                        <form method="POST" action="/topics/{{$topic->id}}/messages" class="mb-5">
                             @csrf
                             <div class="flex flex-col space-y-4 mt-2 mb-4">
                                 <div class="form-group">
@@ -51,12 +64,6 @@
                 </div>
             </div>
         @endforeach
-    </div>
-
-    <div class="container sm:px-6 lg:px-8">
-        <div class="">
-            {{ $topics->links() }}
-        </div>
     </div>
 
     <div class="py-12">
