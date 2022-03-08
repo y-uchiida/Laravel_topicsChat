@@ -24,4 +24,11 @@ class TopicRepository
     {
         return $this->topic->create($data);
     }
+
+    /* ページングされたTopicのデータを取得する
+     */
+    public function getPaginatedTopics(int $per_page)
+    {
+        return $this->topic->paginate($per_page);
+    }
 }
