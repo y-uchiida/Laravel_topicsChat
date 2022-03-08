@@ -45,6 +45,6 @@ class TopicRepository
      */
     public function getPaginatedTopics(int $per_page)
     {
-        return $this->topic->paginate($per_page);
+        return $this->topic->orderby('latest_comment_time', 'desc')->paginate($per_page);
     }
 }
