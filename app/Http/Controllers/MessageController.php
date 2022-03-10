@@ -55,9 +55,9 @@ class MessageController extends Controller
             /* Service 経由で、メッセージの保存を実行 */
             $this->message_service->createNewMessage($message_data, $id);
         }catch(Exception $e) {
-            return redirect()->route('topics.index')->with('error', 'メッセージの投稿中にエラーが発生しました。');
+            return redirect()->route('topics.show')->with('error', 'メッセージの投稿中にエラーが発生しました。');
         }
-        return redirect()->route('topics.index')->with('success', 'メッセージを投稿しました。');
+        return redirect()->route('topics.dhow')->with('success', 'メッセージを投稿しました。');
     }
 
     /**

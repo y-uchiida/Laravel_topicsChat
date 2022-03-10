@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         @foreach ($topics as $topic)
             <div class="py-12 sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg max-w-7xl sm:px-6 lg:px-8">
@@ -56,10 +56,10 @@
                         </form>
                     </div>
                     <div>
-                        <a href="#">全部読む</a>
-                        <a href="#">最新50</a>
-                        <a href="#">1-100</a>
-                        <a href="#">リロード</a>
+                        <a href="{{ route('topics.show', $topic->id) }}">全部読む</a>
+                        <a href="{{ route('topics.show', $topic->id) }}">最新50</a>
+                        <a href="{{ route('topics.show', $topic->id) }}">1-100</a>
+                        <a href="{{ route('topics.index') }}">再読み込み</a>
                     </div>
                 </div>
             </div>
