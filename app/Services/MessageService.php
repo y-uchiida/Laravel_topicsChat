@@ -42,4 +42,20 @@ class MessageService
 
         return $message;
     }
+
+    /**
+     * insertHyperLink()
+     * 渡された文字列からURLを探し出し、ハイパーリンク(a タグ)を追加する
+     *
+     * @param string $src_message
+     * @return string $message
+     */
+    public function insertHyperLink($message)
+    {
+        $message = e($message); /* スクリプトインジェクション対策のため、まずはエスケープを行う */
+        $pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+        $replace = '<a href="$1" target="_blank">$1</a>';
+        $message = preg_replace($pattern, $replace, $message);
+        return $message;
+    }
 }

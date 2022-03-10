@@ -1,3 +1,6 @@
+{{-- MassageService クラス を注入、以降で $message_serviceとして利用できる --}}
+@inject('message_service', 'App\Services\MessageService')
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -22,7 +25,7 @@
                         <div class="flex flex-col space-y-4 mb-4">
                             <h5 class="card-title">{{ $loop->iteration }}
                                 名前：{{ $message->user->name }}：{{ $message->created_at }}</h5>
-                            <p class="card-text">{{ $message->body }}</p>
+                            <p class="card-text">{!! $message_service->insertHyperLink($message->body) !!}</p>
                         </div>
                     </div>
                 </div>
