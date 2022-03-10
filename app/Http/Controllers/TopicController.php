@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TopicRequest;
-
+use App\Repositories\TopicRepository;
 /* Topic関連のビジネスロジックを記述したサービスクラスを読み込み */
 use App\Services\TopicService;
 
@@ -19,13 +19,19 @@ class TopicController extends Controller
     protected $topic_service;
 
     /**
+     * @var TopicRepository
+     */
+    protected $topic_repository;
+
+
+    /**
      * Create a new controller instance.
      *
      * @param  TopicService  $topic_service
      * @return void
      */
     /* コントローラの初期化処理(コンストラクタ) */
-    public function __construct(TopicService $topic_service)
+    public function __construct(TopicService $topic_service, TopicRepository $topic_repository)
     {
         /* index 以外のアクションメソッドの利用時に認証を行うように設定 */
         $this->middleware('auth')->except('index');
@@ -34,6 +40,7 @@ class TopicController extends Controller
          * コンストラクタを利用して依存性注入するので、コンストラクタ・インジェクションという
          */
         $this->topic_service = $topic_service;
+        $this->topic_repository = $topic_repository;
     }
 
     /**
@@ -85,7 +92,9 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        //
+        $topic = $this->topic_repository->findById($id);
+        $topic->load('messages.user'); /* lazy Eager loading で、メッセージの投稿者ユーザーも取得しておく */
+        return view('topics.show', compact('topic'));
     }
 
     /**
