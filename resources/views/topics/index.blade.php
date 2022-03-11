@@ -1,5 +1,6 @@
 {{-- MassageService クラス を注入、以降で $message_serviceとして利用できる --}}
 @inject('message_service', 'App\Services\MessageService')
+@inject('image_service', 'App\Services\ImageService')
 
 <x-app-layout>
     <x-slot name="header">
@@ -34,6 +35,14 @@
                             <h5 class="card-title">{{ $loop->iteration }}
                                 名前：{{ $message->user->name }}：{{ $message->created_at }}</h5>
                             <p class="card-text">{!! $message_service->insertHyperLink($message->body) !!}</p>
+                            <div class="flex">
+                                @forelse ( $message->images as $image )
+                                    <div class="basis-32">
+                                        <img class="w-auto" src="{{$image_service->createTemporaryUrl($image->file_path)}}" alt="{{$image->file_path}}">
+                                    </div>
+                                @empty
+                                @endforelse
+                            </div>
                         </div>
                     @endforeach
                     <hr class="my-2 border-b border-gray-200">

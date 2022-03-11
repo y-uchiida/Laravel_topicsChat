@@ -51,6 +51,7 @@ class TopicController extends Controller
     public function index()
     {
         $topics = $this->topic_service->getTopics(3);
+        $topics->load('messages.user', 'messages.images'); /* load() で、関連レコードをEagerロードしておく */
         return view('topics.index', compact('topics'));
     }
 
@@ -93,7 +94,7 @@ class TopicController extends Controller
     public function show($id)
     {
         $topic = $this->topic_repository->findById($id);
-        $topic->load('messages.user'); /* lazy Eager loading で、メッセージの投稿者ユーザーも取得しておく */
+        $topic->load('messages.user', 'messages.images'); /* lazy Eager loading で、メッセージの投稿者ユーザーも取得しておく */
         return view('topics.show', compact('topic'));
     }
 

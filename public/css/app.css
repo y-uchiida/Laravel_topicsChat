@@ -653,13 +653,13 @@ select {
 .m-0 {
   margin: 0px;
 }
-.my-2 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 .ml-3 {
   margin-left: 0.75rem;
@@ -669,12 +669,6 @@ select {
 }
 .mb-4 {
   margin-bottom: 1rem;
-}
-.mb-5 {
-  margin-bottom: 1.25rem;
-}
-.mt-2 {
-  margin-top: 0.5rem;
 }
 .mt-3 {
   margin-top: 0.75rem;
@@ -694,6 +688,12 @@ select {
 .ml-4 {
   margin-left: 1rem;
 }
+.mt-8 {
+  margin-top: 2rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
 .ml-2 {
   margin-left: 0.5rem;
 }
@@ -702,9 +702,6 @@ select {
 }
 .mr-2 {
   margin-right: 0.5rem;
-}
-.mt-8 {
-  margin-top: 2rem;
 }
 .ml-12 {
   margin-left: 3rem;
@@ -789,6 +786,9 @@ select {
 }
 .shrink-0 {
   flex-shrink: 0;
+}
+.basis-32 {
+  flex-basis: 8rem;
 }
 .origin-top-left {
   transform-origin: top left;
@@ -976,14 +976,14 @@ select {
 .fill-current {
   fill: currentColor;
 }
+.p-6 {
+  padding: 1.5rem;
+}
 .p-2\.5 {
   padding: 0.625rem;
 }
 .p-2 {
   padding: 0.5rem;
-}
-.p-6 {
-  padding: 1.5rem;
 }
 .px-4 {
   padding-left: 1rem;
@@ -1024,6 +1024,10 @@ select {
 .px-1 {
   padding-left: 0.25rem;
   padding-right: 0.25rem;
+}
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
 .py-1 {
   padding-top: 0.25rem;
