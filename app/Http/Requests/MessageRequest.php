@@ -25,6 +25,7 @@ class MessageRequest extends FormRequest
     {
         return [
             'body' => 'required|min:10',
+            'images.*' => 'image|mimes:jpg,png,jpeg,gif,svg',
         ];
     }
 
@@ -32,7 +33,9 @@ class MessageRequest extends FormRequest
     {
         return [
             'body.required'  => trans('validation.required'),
-            'body.min'  => trans('validation.min')
+            'body.min'  => trans('validation.min'),
+            'images.image'  => trans('validation.image'),
+            'images.mimes'  => trans('validation.mimes'),
         ];
     }
 }
