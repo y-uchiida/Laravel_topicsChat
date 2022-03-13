@@ -3,7 +3,6 @@
 /* コントローラのクラスを読み込み */
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\TopicController;
-use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\HomeController;
 
 use Illuminate\Support\Facades\Route;
@@ -34,10 +33,10 @@ Route::resource('/topics', TopicController::class)->except(['create', 'update'])
 Route::resource('/topics/{topic}/messages', MessageController::class)->except(['create', 'update'])->middleware(['auth']);
 
 /* 管理者関連のログイン前の処理 */
-Route::group(['prefix' => 'admin'], function () {
-    Route::get('login', [LoginController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('login', [LoginController::class, 'login']);
-});
+// Route::group(['prefix' => 'admin'], function () {
+//     Route::get('login', [LoginController::class, 'showLoginForm'])->name('admin.login');
+//     Route::post('login', [LoginController::class, 'login']);
+// });
 
 /* 管理者関連のログイン後の処理 */
 Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function(){
@@ -45,3 +44,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin'], function(){
 });
 
 require __DIR__ . '/auth.php';
+
+/* 一般ユーザーのルーティングパスと分けるため、プレフィックスを付けてadmin関連のルーティングをインクルード */
+Route::prefix('admin')->name('admin.')->group(function(){
+
+    Route::get('/home', function () {
+        return view('admin.home');
+    })->middleware(['auth:admin'])->name('admin.home');
+
+    require __DIR__.'/admin.php';
+});
