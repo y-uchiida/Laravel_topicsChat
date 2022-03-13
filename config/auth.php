@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins', /* provider の設定は、下記の providers 配列に追記 */
+        ],
     ],
 
     /*
@@ -63,6 +67,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
         ],
 
         // 'users' => [
@@ -92,6 +101,14 @@ return [
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
+        ],
+
+        /* admins プロバイダーのパスワードリセットの設定 */
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60
         ],
     ],
 
