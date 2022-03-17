@@ -41,6 +41,14 @@ class TopicRepository
         return $topic->Save();
     }
 
+    /**
+     * topic を削除する
+     */
+    public function deleteTopic(int $id){
+        $topic = $this->findById($id);
+        return $topic->delete();
+    }
+
     /* ページングされたTopicのデータを取得する
      */
     public function getPaginatedTopics(int $per_page)
