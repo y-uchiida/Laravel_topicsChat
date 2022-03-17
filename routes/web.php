@@ -47,10 +47,12 @@ require __DIR__ . '/auth.php';
 
 /* 一般ユーザーのルーティングパスと分けるため、プレフィックスを付けてadmin関連のルーティングをインクルード */
 Route::prefix('admin')->name('admin.')->group(function(){
-
     Route::get('/home', function () {
         return view('admin.home');
     })->middleware(['auth:admin'])->name('admin.home');
-
     require __DIR__.'/admin.php';
+});
+
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:admin', 'as' => 'admin.'], function(){
+
 });

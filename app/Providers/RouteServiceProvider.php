@@ -21,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/topics';
 
     /* 管理者としてログインした際の初期ページ（認証直後のリダイレクト先） */
-    public const ADMIN = '/admin/home';
+    public const ADMIN = '/admin/topics';
 
 
     /**
