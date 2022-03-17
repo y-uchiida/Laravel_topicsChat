@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TopicRequest;
 use App\Repositories\TopicRepository;
+use App\Services\SlackNotificationService;
 /* Topic関連のビジネスロジックを記述したサービスクラスを読み込み */
 use App\Services\TopicService;
 
@@ -23,6 +24,10 @@ class TopicController extends Controller
      */
     protected $topic_repository;
 
+    /**
+     * @var SlackNotificationService
+     */
+    protected $slack_notification_service;
 
     /**
      * Create a new controller instance.
@@ -31,7 +36,10 @@ class TopicController extends Controller
      * @return void
      */
     /* コントローラの初期化処理(コンストラクタ) */
-    public function __construct(TopicService $topic_service, TopicRepository $topic_repository)
+    public function __construct(
+        TopicService $topic_service,
+        TopicRepository $topic_repository,
+        SlackNotificationService $slack_notification_service)
     {
         /* index 以外のアクションメソッドの利用時に認証を行うように設定 */
         $this->middleware('auth')->except('index');
@@ -40,7 +48,12 @@ class TopicController extends Controller
          * コンストラクタを利用して依存性注入するので、コンストラクタ・インジェクションという
          */
         $this->topic_service = $topic_service;
+
+        /* Topicのリポジトリ（データソースの操作を担うクラス）を注入 */
         $this->topic_repository = $topic_repository;
+
+        /* Slack用の通知サービスクラスを注入 */
+        $this->slack_notification_service = $slack_notification_service;
     }
 
     /**
@@ -77,6 +90,9 @@ class TopicController extends Controller
         try {
             $data = $request->only(['name', 'content']);
             $this->topic_service->createNewTopic($data, Auth::id());
+            $this->slack_notification_service->send(
+                sprintf("%s が スレッド %s を作成しました", Auth::user()->name, $request->name)
+            );
         } catch (Exception $e) {
             return redirect()->route('topics.index')->with('error', 'トピックの作成中にエラーが発生しました。もう一度やり直してください');
         }
